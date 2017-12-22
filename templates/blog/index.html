@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block main %}
+{% if error_msg %}
+    <p>{{ error_msg }}</p>
+{% endif %}
+{% for post in post_list %}
+<article class="post post-{{ post.pk }}">
+    <header class="entry-header">
+        <h1 class="entry-title">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </h1>
+        <div class="entry-meta">
+            <span class="post-category"><a href="#">{{ post.category.name }}</a></span>
+            <span class="post-date"><a href="#"><time class="entry-date"
+                                                      datetime="{{ post.created_time }}">{{ post.created_time }}</time></a></span>
+            <span class="post-author"><a href="#">{{ post.author }}</a></span>
+            <span class="comments-link"><a href="#">{{ post.comment_set.count }} 评论</a></span>
+            <span class="views-count"><a href="{{ post.get_absolute_url }}">{{ post.views }} 阅读</a></span>
+        </div>
+    </header>
+    <div class="entry-content clearfix">
+        <div class="read-more cl-effect-14">
+             <p class="text-center lead"> {{ post.excerpt }} </p>
+            <a href="{{ post.get_absolute_url }}" class="more-link">继续阅读 <span class="meta-nav">→</span></a>
+            <hr  color=blue >
+        </div>
+    </div>
+</article>
+{% empty %}
+    <div class="no-post">暂时还没有发布的文章！</div>
+{% endfor %}
+
+    <!-- 简单分页效果
+    <div class="pagination-simple">
+        <a href="#">上一页</a>
+        <span class="current">第 6 页 / 共 11 页</span>
+        <a href="#">下一页</a>
+    </div>
+    -->
+
+
+{% if is_paginated %}
+<nav style="text-align: center">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="disabled"><a href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>
+        {% endif %}
+
+        {% if first %}
+        <li class="active"><a href="?page=1">1 <span class="sr-only">(current)</span></a></li>
+        {% endif %}
+
+        {% if left %}
+            {% if left_has_more %}
+                <li><span>...</span></li>
+            {% endif %}
+            {% for i in left %}
+                <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endfor %}
+        {% endif %}
+        <li class="active"><a href="?page={{ page_obj.number }}">{{ page_obj.number }} <span class="sr-only">(current)</span></a></li>
+        {% if right %}
+            {% for i in right %}
+                <li class="active"><a href="?page={{ i }}">{{ i }} <span class="sr-only">(current)</span></a></li>
+            {% endfor %}
+            {% if right_has_more %}
+                <li><span>...</span></li>
+            {% endif %}
+        {% endif %}
+        {% if last %}
+        <li class="active"><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }} <span class="sr-only">(current)</span></a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+
+
+{% endblock main %}
